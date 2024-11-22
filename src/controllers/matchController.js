@@ -24,24 +24,15 @@ exports.createMatchWithLoggedInUser = async (req, res) => {
     const { sender } = req.body;
 
     try {
-        console.log("Solicitud recibida:", req.body);
-
         const senderUser = await User.findById(sender);
-        if (!senderUser || !senderUser.isLoggedIn) {
-            console.log("El remitente no está logueado o no existe.");
+        if (!senderUser || !senderUser.isLoggedIn) 
             return res.status(400).json({ message: "Sender must be logged in" });
-        }
-        console.log("Remitente validado:", senderUser);
-
+        
         const loggedInUsers = await User.find({ _id: { $ne: sender }, isLoggedIn: true });
-        if (loggedInUsers.length === 0) {
-            console.log("No hay usuarios logueados disponibles.");
+        if (loggedInUsers.length === 0) 
             return res.status(404).json({ message: "No logged-in users available for matching" });
-        }
-        console.log("Usuarios logueados disponibles:", loggedInUsers);
-
+        
         const randomUser = loggedInUsers[Math.floor(Math.random() * loggedInUsers.length)];
-        console.log("Usuario seleccionado al azar:", randomUser);
 
         const invitation = new Invitation({
             sender,
@@ -49,13 +40,10 @@ exports.createMatchWithLoggedInUser = async (req, res) => {
         });
 
         await invitation.save();
-        console.log("Invitación creada:", invitation);
-
-        console.log("Usuarios activos:", activeUsers);
 
         const receiverSocketId = activeUsers[randomUser._id.toString()];
+        console.log(activeUsers);
         if (receiverSocketId) {
-            console.log("Socket del receptor encontrado:", receiverSocketId);
             io.to(receiverSocketId).emit("receive-invitation", {
                 sender,
                 receiver: randomUser._id,
