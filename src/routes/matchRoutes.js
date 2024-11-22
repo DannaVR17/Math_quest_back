@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middlewares/authMiddleware");
 const {
     createMatch,
     registerAnswer,
@@ -10,15 +11,15 @@ const {
 } = require("../controllers/matchController");
 
 // Crear partida
-router.post("/", createMatch);
+router.post("/", authMiddleware, createMatch);
 
-router.post("/create-with-logged-user", createMatchWithLoggedInUser);
+router.post("/createWithLoggedUser", authMiddleware, createMatchWithLoggedInUser);
 
 // Registrar respuesta
-router.post("/answer", registerAnswer);
+router.post("/answer", authMiddleware, registerAnswer);
 
 // Finalizar partida
-router.post("/:matchId/finish", finishMatch);
+router.post("/:matchId/finish", authMiddleware, finishMatch);
 
 // Actualizar ranking
 router.post("/ranking", updateRanking);

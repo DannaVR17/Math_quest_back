@@ -10,6 +10,7 @@ const examRoutes = require("./routes/examRoutes");
 const matchRoutes = require("./routes/matchRoutes");
 const rankingRoutes = require("./routes/rankingRoutes");
 const questionRoutes = require("./routes/questionRoutes");
+const protectedRoutes = require("./routes/protectedRoutes");
 
 connectDB();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use(cors({ origin: "http://localhost:8080" }));
 
 // Rutas
+app.use("/api/protected", protectedRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/topics", topicRoutes);
 app.use("/api/exams", examRoutes);

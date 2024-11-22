@@ -19,6 +19,7 @@ exports.createTopic = async (req, res) => {
     res.status(500).json({ message: "Error creating topic", error });
   }
 };
+
 // Obtener un tema por _id
 exports.getTopicById = async (req, res) => {
   const { _id } = req.params; // Obtenemos el ID de los parámetros de la solicitud

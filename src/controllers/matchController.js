@@ -2,8 +2,7 @@ const Match = require("../models/Match");
 const User = require("../models/User");
 const Ranking = require("../models/Ranking");
 const Invitation = require("../models/Invitation");
-const activeUsers = require("../sockets/socketEvents").activeUsers;
-
+const { activeUsers } = require("../sockets/socketEvents");
 
 // Crear una nueva partida
 exports.createMatch = async (req, res) => {
@@ -25,32 +24,38 @@ exports.createMatchWithLoggedInUser = async (req, res) => {
     const { sender } = req.body;
 
     try {
-        // Verificar que el remitente esté logueado
+        console.log("Solicitud recibida:", req.body);
+
         const senderUser = await User.findById(sender);
         if (!senderUser || !senderUser.isLoggedIn) {
+            console.log("El remitente no está logueado o no existe.");
             return res.status(400).json({ message: "Sender must be logged in" });
         }
+        console.log("Remitente validado:", senderUser);
 
-        // Buscar usuarios logueados al azar
         const loggedInUsers = await User.find({ _id: { $ne: sender }, isLoggedIn: true });
         if (loggedInUsers.length === 0) {
+            console.log("No hay usuarios logueados disponibles.");
             return res.status(404).json({ message: "No logged-in users available for matching" });
         }
+        console.log("Usuarios logueados disponibles:", loggedInUsers);
 
-        // Seleccionar un usuario al azar
         const randomUser = loggedInUsers[Math.floor(Math.random() * loggedInUsers.length)];
+        console.log("Usuario seleccionado al azar:", randomUser);
 
-        // Crear una invitación
         const invitation = new Invitation({
             sender,
             receiver: randomUser._id,
         });
 
         await invitation.save();
+        console.log("Invitación creada:", invitation);
 
-        // Obtener el socket.id del receptor
-        const receiverSocketId = activeUsers[randomUser._id];
+        console.log("Usuarios activos:", activeUsers);
+
+        const receiverSocketId = activeUsers[randomUser._id.toString()];
         if (receiverSocketId) {
+            console.log("Socket del receptor encontrado:", receiverSocketId);
             io.to(receiverSocketId).emit("receive-invitation", {
                 sender,
                 receiver: randomUser._id,
@@ -63,7 +68,8 @@ exports.createMatchWithLoggedInUser = async (req, res) => {
 
         res.status(201).json({ message: "Match created and invitation sent", invitation });
     } catch (error) {
-        res.status(500).json({ message: "Error creating match with logged-in user", error });
+        console.error("Error creando el match:", error.message, error.stack);
+        res.status(500).json({ message: "Error creating match with logged-in user", error: error.message });
     }
 };
 

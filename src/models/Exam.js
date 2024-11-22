@@ -5,8 +5,8 @@ const examSchema = mongoose.Schema(
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
         topic: { type: mongoose.Schema.Types.ObjectId, ref: "Topic", required: true },
         date: { type: Date, default: Date.now },
-        score: { type: Number, required: true },
-        timeSpent: { type: Number, required: true },
+        score: { type: Number, required: true, min: 0 },
+        timeSpent: { type: Number, required: true, min: 0 },
         answers: [
             {
                 question: { type: mongoose.Schema.Types.ObjectId, ref: "Question", required: true },

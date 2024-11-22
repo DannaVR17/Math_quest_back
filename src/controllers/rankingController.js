@@ -12,11 +12,15 @@ exports.getGlobalRanking = async (req, res) => {
 };
 
 exports.updateRanking = async (req, res) => {
-    const { userId, totalScore } = req.body;
+    const { userId, totalScore, time } = req.body;
     try {
+        const update = { lastUpdated: Date.now() };
+        if (totalScore !== undefined) update.totalScore = totalScore;
+        if (time !== undefined) update.totalTime = time;
+
         const ranking = await Ranking.findOneAndUpdate(
             { user: userId },
-            { totalScore, lastUpdated: Date.now() },
+            { $inc: update },
             { new: true, upsert: true }
         );
         res.status(200).json(ranking);
@@ -24,7 +28,6 @@ exports.updateRanking = async (req, res) => {
         res.status(500).json({ message: "Error updating ranking", error });
     }
 };
-
 exports.updateRanking = async (req, res) => {
     const { userId, time } = req.body;
     try {

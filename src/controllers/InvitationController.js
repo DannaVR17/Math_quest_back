@@ -4,6 +4,11 @@ const Match = require("../models/Match");
 exports.createInvitation = async (req, res) => {
     const { senderId, receiverId } = req.body;
     try {
+        const existingInvitation = await Invitation.findOne({ sender: senderId, receiver: receiverId, status: "pending" });
+        if (existingInvitation) {
+            return res.status(400).json({ message: "Invitation already exists" });
+        }
+
         const invitation = new Invitation({ sender: senderId, receiver: receiverId });
         await invitation.save();
         res.status(201).json(invitation);
