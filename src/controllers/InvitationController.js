@@ -51,7 +51,7 @@ exports.getUserInvitations = async (req, res) => {
         // Buscar invitaciones pendientes para el usuario
         const invitations = await Invitation.find({
             receiver: userId,
-            status: "pending", // Solo traer las invitaciones pendientes
+            status: "Pendiente", // Solo traer las invitaciones pendientes
         }).populate("sender", "username"); // Popula el remitente para obtener detalles como el nombre de usuario
 
         if (!invitations.length) {
