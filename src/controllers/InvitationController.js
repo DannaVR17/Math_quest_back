@@ -4,7 +4,7 @@ const Match = require("../models/Match");
 exports.createInvitation = async (req, res) => {
     const { senderId, receiverId } = req.body;
     try {
-        const existingInvitation = await Invitation.findOne({ sender: senderId, receiver: receiverId, status: "pending" });
+        const existingInvitation = await Invitation.findOne({ sender: senderId, receiver: receiverId, status: "Pendiente" });
         if (existingInvitation) {
             return res.status(400).json({ message: "Invitation already exists" });
         }
@@ -35,7 +35,7 @@ exports.acceptInvitation = async (req, res) => {
         await match.save();
 
         // Actualizar la invitación como aceptada
-        invitation.status = "accepted";
+        invitation.status = "Aceptada";
         await invitation.save();
 
         res.status(200).json({ message: "Invitation accepted", match });
