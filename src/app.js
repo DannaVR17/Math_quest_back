@@ -12,6 +12,8 @@ const rankingRoutes = require("./routes/rankingRoutes");
 const questionRoutes = require("./routes/questionRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 const invitationRoutes = require("./routes/invitationRoutes");
+const scoreRoutes = require("./routes/scoreRoutes");
+const score = require("./models/score");
 
 connectDB();
 
@@ -30,5 +32,6 @@ app.use("/api/matches", matchRoutes);
 app.use("/api/ranking", rankingRoutes);
 app.use("/api/invitation", invitationRoutes);
 app.use("/api/questions", questionRoutes);
+app.use("/api/score",scoreRoutes);
 
 module.exports = app;

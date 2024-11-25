@@ -11,6 +11,13 @@ exports.getAllQuestions = async (req, res) => {
 
 exports.createQuestion = async (req, res) => {
     const { topic, category, type, content, correctAnswer, options, timeLimit } = req.body;
+    // Validar para tipo 'verdadero/falso'
+    if (type === 'verdadero/falso') {
+        // Asegurarse de que las opciones incluyan "Verdadero" y "Falso"
+        if (!options || !options.includes("Verdadero") || !options.includes("Falso")) {
+            return res.status(400).json({ message: 'Las opciones deben incluir "Verdadero" y "Falso".' });
+        }
+    }
     try {
         const question = new Question({ topic, category, type, content, correctAnswer, options, timeLimit });
         await question.save();
