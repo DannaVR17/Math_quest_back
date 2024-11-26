@@ -10,11 +10,14 @@ COPY package*.json ./
 # Instala las dependencias
 RUN npm install
 
+# Copia el archivo `.env.production` al contenedor
+COPY .env.production .env
+
 # Copia el resto de los archivos de la aplicación
 COPY . .
 
 # Expone el puerto en el que tu aplicación escucha (ajústalo si es diferente)
 EXPOSE 5000
 
-# Comando para iniciar la aplicación
+# Comando para iniciar la aplicación en producción
 CMD ["npm", "start"]
